@@ -1,21 +1,32 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
- <%@ page import="java.io.PrintWriter" %>
+ <%@ page import="java.io.PrintWriter"%>
+ <%@ page import="kku.KkuDAO"%>
+ <%@ page import="kku.Kku"%>
+ <%@ page import="java.util.ArrayList"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
 <meta name="viewport" content="width=device-width"  initial-scale="1">
 <link rel="stylesheet" href="css/bootstrap.css">
-<title>KU LOGIN</title>
+<title>게시판</title>
+
 </head>
 <body>
+
 	<%
 		String userID =null;
 		if(session.getAttribute("userID") != null){
 			userID = (String) session.getAttribute("userID");
 		}
+		
+		int pageNumber = 1;
+		if(request.getParameter("pageNumber") != null){
+			pageNumber = Integer.parseInt(request.getParameter("pageNumber"));
+		}
 	%>
+	
 	<nav class="navbar navbar-default">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed" 
@@ -85,14 +96,37 @@
 			</thead>
 			
 			<tbody>
+			<%
+				KkuDAO kkuDAO = new KkuDAO();
+			ArrayList<Kku> list = kkuDAO.getList(pageNumber);
+			for(int i=0; i<list.size(); i++){
+			%>
 			<tr>
-				<td>1</td>
-				<td>hi</td>
-				<td>cat</td>
-				<td>2020-04-06</td>
+				<td><%= list.get(i).getKkuID() %></td>
+				<td><a href="view.jsp?kkuID=<%= list.get(i).getKkuID()%>"><%= list.get(i).getKkuTitle() %></a></td>
+				<td><%= list.get(i).getUserID() %></td>
+				<td><%= list.get(i).getKkuDate().substring(0, 11) + list.get(i).getKkuDate().substring(11,13) + "시" + list.get(i).getKkuDate().substring(14,16)+ "분" %></td>
 			</tr>
+			<%
+			}
+			%>
 			</tbody>
 			</table>
+			
+			<%
+				if(pageNumber !=1) {
+					
+			%>
+			
+				<a href="kku.jsp?pageNumber=<%=pageNumber -1 %>" class="btn btn-success btn-arraw-left">이전</a>
+			
+			<%
+				} if(kkuDAO.nextPage(pageNumber+1)) {
+			%>
+				<a href="kku.jsp?pageNumber=<%=pageNumber +1 %>" class="btn btn-success btn-arrow-left">다음</a>		
+			<%
+				}
+			%>
 			
 			<a href="write.jsp" class="btn btn-primary pull-right">글쓰기</a>
 			
