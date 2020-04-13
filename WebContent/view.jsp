@@ -1,32 +1,39 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
- <%@ page import="java.io.PrintWriter"%>
- <%@ page import="kku.KkuDAO"%>
- <%@ page import="kku.Kku"%>
- <%@ page import="java.util.ArrayList"%>
+ <%@ page import="java.io.PrintWriter" %>
+ <%@ page import="kku.Kku" %>
+ <%@ page import="kku.KkuDAO" %>
+ 
 <!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
 <meta name="viewport" content="width=device-width"  initial-scale="1">
 <link rel="stylesheet" href="css/bootstrap.css">
-<title>게시판</title>
-
+<title>KU LOGIN</title>
 </head>
 <body>
-
 	<%
 		String userID =null;
 		if(session.getAttribute("userID") != null){
 			userID = (String) session.getAttribute("userID");
 		}
 		
-		int pageNumber = 1;
-		if(request.getParameter("pageNumber") != null){
-			pageNumber = Integer.parseInt(request.getParameter("pageNumber"));
+		int kkuID=0;
+		if(request.getParameter("kkuID") != null){
+			kkuID = Integer.parseInt(request.getParameter("kkuID"));
 		}
+		
+		if(kkuID == 0){
+			PrintWriter script = response.getWriter();
+			script.println("<script>");
+			script.println("alert('유효하지 않은 글입니다.')");
+			script.println("location.href='kku.jsp'");
+			script.println("</script>");
+		}
+		Kku kku = new KkuDAO().getKku(kkuID);
+		
 	%>
-	
 	<nav class="navbar navbar-default">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed" 
@@ -85,56 +92,52 @@
 	
 	<div class="container">
 		<div class="row">
-			<table class="table table-striped" style="text-align:center; border: 1px solid #dddddd">
+		<table class="table table-striped" style="text-align:center; border: 1px solid #dddddd">
 			<thead>
 			<tr>
-				<th style="background-color: #eeeeee; text-align:center;">번호</th>
-				<th style="background-color: #eeeeee;text-align:center;">제목</th>
-				<th style="background-color: #eeeeee; text-align:center;">작성자</th>
-				<th style="background-color: #eeeeee; text-align:center;">작성일</th>
+				<th colspan="3" style="background-color: #eeeeee; text-align:center;">게시판 글 보기 양식</th>
 			</tr>
 			</thead>
 			
 			<tbody>
-			<%
-				KkuDAO kkuDAO = new KkuDAO();
-			ArrayList<Kku> list = kkuDAO.getList(pageNumber);
-			for(int i=0; i<list.size(); i++){
-			%>
 			<tr>
-				<td><%= list.get(i).getKkuID() %></td>
-				<td><a href="view.jsp?kkuID=<%= list.get(i).getKkuID()%>"><%= list.get(i).getKkuTitle().replaceAll(" ","&nbsp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\n","<br>") %></a></td>
-				<td><%= list.get(i).getUserID() %></td>
-				<td><%= list.get(i).getKkuDate().substring(0, 11) + list.get(i).getKkuDate().substring(11,13) + "시" + list.get(i).getKkuDate().substring(14,16)+ "분" %></td>
+				<td style="width:20%;">제목</td>
+				<td colspan="2"><%= kku.getKkuTitle().replaceAll(" ","&nbsp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\n","<br>") %></td>
 			</tr>
-			<%
-			}
-			%>
+			
+			<tr>	
+				<td>작성자</td>
+				<td colspan="2"><%= kku.getUserID() %></td>
+			</tr>
+			
+			<tr>	
+				<td>작성일자</td>
+				<td colspan="2"><%= kku.getKkuDate().substring(0, 11) + kku.getKkuDate().substring(11,13) + "시" + kku.getKkuDate().substring(14,16)+ "분" %></td>
+			</tr>
+			
+			<tr>	
+				<td>내용</td>
+				<td colspan="2" style="min-height:200px; text-align:left;"><%=kku.getKkuContent().replaceAll(" ","&nbsp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\n","<br>")%></td>
+			</tr>
+			
 			</tbody>
-			</table>
-			
-			<%
-				if(pageNumber !=1) {
-					
-			%>
-			
-				<a href="kku.jsp?pageNumber=<%=pageNumber -1 %>" class="btn btn-success btn-arraw-left">이전</a>
-			
-			<%
-				} if(kkuDAO.nextPage(pageNumber+1)) {
-			%>
-				<a href="kku.jsp?pageNumber=<%=pageNumber +1 %>" class="btn btn-success btn-arrow-left">다음</a>		
-			<%
-				}
-			%>
-			
-			<a href="write.jsp" class="btn btn-primary pull-right">글쓰기</a>
+		</table>
+		<a href="kku.jsp" class="btn btn-primary">목록</a>
+		<%
+			if(userID !=null && userID.equals(kku.getUserID())){
+		%>	
+			<a href="update.jsp?kkuID=<%=kkuID%>" class="btn btn-primary">수정</a>
+			<a href="deleteAction.jsp.kkuID=<%=kkuID%>" class="btn btn-primary">삭제</a>
+		<% 
+			}
+		%>
+		<input type="submit" class="btn btn-primary pull-right" value="글쓰기">
 			
 		</div>
 	</div>
-
 	
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 	<script src="js/bootstrap.js"></script>
+	
 </body>
 </html>
