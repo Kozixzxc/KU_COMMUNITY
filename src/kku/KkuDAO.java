@@ -114,7 +114,62 @@ public class KkuDAO {
 		}
 				return false; 
 		}
+	
+	
+	
+	public Kku getKku(int kkuID) {
+		String SQL = "SELECT * FROM KKU WHERE kkuID =?";
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(SQL);
+			pstmt.setInt(1, kkuID);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				Kku kku = new Kku();
+				kku.setKkuID(rs.getInt(1));
+				kku.setKkuTitle(rs.getString(2));
+				kku.setUserID(rs.getString(3));
+				kku.setKkuDate(rs.getString(4));
+				kku.setKkuContent(rs.getString(5));
+				kku.setKkuAvailable(rs.getInt(6));
+				return kku;
+			}			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+				return null; 
+		}
+		
+	
+	public int update(int kkuID,String kkuTitle , String kkuContent) {
+		String SQL = "UPDATE KKU SET kkuTitle = ?, kkuContent=? WHERE kkuID=?";
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(SQL);
+			pstmt.setString(1, kkuTitle);
+			pstmt.setString(2, kkuContent);
+			pstmt.setInt(3, kkuID);		
+			return pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+				return -1; // DB오류
+		}
+	
+	public int delete(int kkuID) {
+		String SQL = "UPDATE KKU SET kkuAvailable = 0 WHERE kkuID =?";
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(SQL);
+			pstmt.setInt(1, kkuID);
+			return pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+				return -1; // DB오류
+		
 	}
+}
+	
+	
+
 	
 	
 	
