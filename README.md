@@ -1,15 +1,25 @@
 # KU_COMMUNITY
-학교 게시판 사이트
 
-로그인 페이지 | 회원가입 페이지 | 게시판 메인 페이지 | 글 페이지 구현
+건국대학교 글로컬캠퍼스 프로그래밍 동아리 사이트
+=============
+프로그래밍 동아리 학부생들간의 교류 목적의 게시판 사이트
 
-회원 데이터베이스
+환경설정
+------------
+-JDK 1.8.0_181 jre 1.80_231
+-apache tomcat 8.5
+-Eclpise Jee Photon
 
-로그인 기능
-회원가입 기능
-회원 세션 유지 기능
-글쓰기 보기 기능
-수정 삭제 기능이 구현된 대학교 웹 사이트입니다.
+사용 언어 , 프레임워크
+-----------
+-Java(Main),jsp,mysql
+-html,css(bootstrap)
+
+기능
+-----------
+-login , logout , 회원가입 + 간단한 로그인 세션 유지 기능
+-데이터베이스 연동을 통해 게시판 글 작성 , 삭제 , 수정기능이 구현된 간단한 대학교 교류 사이트입니다.
+
 
 Screenshots
 
@@ -20,3 +30,4 @@ Screenshots
 ![image](https://user-images.githubusercontent.com/34633494/86465201-2a2e0c80-bd6c-11ea-9223-a0116d003da7.png)
 
 ![image](https://user-images.githubusercontent.com/34633494/86465217-30bc8400-bd6c-11ea-942a-321cc006a4aa.png)
+
